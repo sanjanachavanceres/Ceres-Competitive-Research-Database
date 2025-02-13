@@ -8,7 +8,7 @@ api_key = os.getenv("CLAUDE_API_KEY")  # Get API key from GitHub Secrets
 client = anthropic.Anthropic(api_key=api_key)
 
 # Load Excel File
-@st.cache
+@st.cache_data  # Updated from @st.cache to @st.cache_data
 def load_data(file):
     df = pd.read_excel(file)
     return df
