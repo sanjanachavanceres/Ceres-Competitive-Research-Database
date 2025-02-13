@@ -26,10 +26,16 @@ if uploaded_file:
     question = st.text_input("Ask a question about your data:")
     
     if question:
+        # Use the entire dataset
         prompt = f"Based on this dataset:\n{df.to_string()}\nAnswer: {question}"
+
         response = client.messages.create(
             model="claude-3-opus-2024-02-08",
             max_tokens=300,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {"role": "system", "content": "You are an AI assistant analyzing Excel data."},
+                {"role": "user", "content": prompt}
+            ]
         )
+
         st.write("### Answer:", response.content[0].text)
