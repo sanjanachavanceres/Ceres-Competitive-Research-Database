@@ -1,18 +1,21 @@
 import streamlit as st
 import pandas as pd
-import anthropic  # Use Claude API
-import os  
+import anthropic
+import os  # Import os to read environment variables
 
-# Set up Claude API Key
-api_key = os.getenv("CLAUDE_API_KEY")  
+# Load API Key from Environment Variable
+api_key = os.getenv("CLAUDE_API_KEY")
+
+# Ensure API Key is set
 if not api_key:
-    st.error("❌ Error: Claude API key is missing. Make sure it is set in secrets.toml!")
+    st.error("API key is missing! Please add your CLAUDE_API_KEY as a GitHub Secret.")
     st.stop()
 
+# Initialize Claude API client
 client = anthropic.Anthropic(api_key=api_key)
 
-# Load Excel File
-@st.cache_data  
+# Function to load Excel File
+@st.cache_data
 def load_data(file):
     df = pd.read_excel(file)
     return df
@@ -21,6 +24,7 @@ def load_data(file):
 st.title("📊 Ceres Competitive Research Database")
 st.write("Upload an Excel file and ask questions about the data.")
 
+# Upload Excel File
 uploaded_file = st.file_uploader("Upload your Excel file", type=["xlsx"])
 
 if uploaded_file:
@@ -30,22 +34,14 @@ if uploaded_file:
     question = st.text_input("Ask a question about your data:")
     
     if question:
-        # Debugging: Show first 5 characters of API Key
-        st.write(f"🔍 Debug: API Key Detected: {api_key[:5]}*****")
-
-        # Safe data handling
-        prompt = f"Here is an Excel dataset:\n{df.head(10).to_string()}\n\nQuestion: {question}\nProvide an answer in detail:"
-
+        prompt = f"Based on this dataset:\n{df.to_string()}\nAnswer the following: {question}"
+        
         try:
             response = client.messages.create(
                 model="claude-3-opus-2024-02-08",
                 max_tokens=300,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+                messages=[{"role": "user", "content": prompt}]
             )
-
             st.write("### Answer:", response.content[0].text)
-
         except Exception as e:
-            st.error(f"❌ Claude API Error: {str(e)}")
+            st.error(f"Error in Claude API request: {str(e)}")
