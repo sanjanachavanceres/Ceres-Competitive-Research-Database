@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
-import openai
+import anthropic  # Use Claude API instead of OpenAI
 
-# Set up OpenAI API Key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Set up Claude API Key
+client = anthropic.Anthropic(api_key=st.secrets["CLAUDE_API_KEY"])
 
 # Load Excel File
 @st.cache
@@ -25,8 +25,9 @@ if uploaded_file:
     
     if question:
         prompt = f"Based on this dataset:\n{df.to_string()}\nAnswer: {question}"
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
+        response = client.messages.create(
+            model="claude-3-opus-2024-02-08",
+            max_tokens=300,
             messages=[{"role": "user", "content": prompt}]
         )
-        st.write("### Answer:", response["choices"][0]["message"]["content"])
+        st.write("### Answer:", response.content[0].text)
