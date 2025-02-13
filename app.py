@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
 import anthropic  # Use Claude API instead of OpenAI
+import os  # Import os for environment variables
 
 # Set up Claude API Key
-client = anthropic.Anthropic(api_key=st.secrets["CLAUDE_API_KEY"])
+api_key = os.getenv("CLAUDE_API_KEY")  # Get API key from GitHub Secrets
+client = anthropic.Anthropic(api_key=api_key)
 
 # Load Excel File
 @st.cache
