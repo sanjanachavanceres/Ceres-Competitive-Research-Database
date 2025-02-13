@@ -38,7 +38,7 @@ if uploaded_file:
         
         try:
             response = client.messages.create(
-                model="claude-3-opus-2024-02-08",
+                model="claude-3-opus",  # Updated to the latest working Claude model
                 max_tokens=300,
                 messages=[{"role": "user", "content": prompt}]
             )
