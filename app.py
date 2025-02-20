@@ -41,16 +41,5 @@ if uploaded_file:
         question = st.text_input("💬 Ask a question about your data:")
 
         if question:
-            prompt = f"Based on this dataset:\n{df.to_string()}\nAnswer the following: {question}"
+            # Convert DataFrame to string with a reasonable character limit
 
-            try:
-                response = client.messages.create(
-                    model="claude-2",  # Changed to Claude-2
-                    max_tokens=300,
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                st.write("### ✅ Answer:", response.content[0].text)
-            except anthropic.APIError as e:
-                st.error(f"❌ Claude API request failed: {e}")
-            except Exception as e:
-                st.error(f"❌ Unexpected error: {e}")
