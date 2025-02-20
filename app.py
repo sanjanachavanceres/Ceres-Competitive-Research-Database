@@ -40,7 +40,7 @@ if uploaded_file:
 
         question = st.text_input("💬 Ask a question about your data:")
 
-        if question:  # <-- The previous error was likely due to missing indentation here
+        if question:
             # Convert DataFrame to string with a reasonable character limit
             data_preview = df.to_string(max_rows=50, max_cols=10)  # Limits excessive token usage
 
@@ -48,7 +48,7 @@ if uploaded_file:
 
             try:
                 response = client.messages.create(
-                    model="claude-3-opus-2024-02-08",  # Updated to latest Claude model
+                    model="claude-2.1",  # Change to an available model
                     max_tokens=300,
                     messages=[{"role": "user", "content": prompt}]
                 )
