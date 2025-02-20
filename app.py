@@ -40,6 +40,20 @@ if uploaded_file:
 
         question = st.text_input("💬 Ask a question about your data:")
 
-        if question:
+        if question:  # <-- The previous error was likely due to missing indentation here
             # Convert DataFrame to string with a reasonable character limit
+            data_preview = df.to_string(max_rows=50, max_cols=10)  # Limits excessive token usage
 
+            prompt = f"Here is a dataset:\n{data_preview}\n\nAnswer the following question: {question}"
+
+            try:
+                response = client.messages.create(
+                    model="claude-3-opus-2024-02-08",  # Updated to latest Claude model
+                    max_tokens=300,
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                st.write("### ✅ Answer:", response.content[0].text)
+            except anthropic.APIError as e:
+                st.error(f"❌ Claude API request failed: {e}")
+            except Exception as e:
+                st.error(f"❌ Unexpected error: {e}")
